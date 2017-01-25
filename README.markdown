@@ -1,15 +1,17 @@
 # Experimental [![Build Status](https://travis-ci.org/howaboutwe/experimental.png?branch=master)](https://travis-ci.org/howaboutwe/experimental) [![Code Climate](https://codeclimate.com/github/howaboutwe/experimental.png)](https://codeclimate.com/github/howaboutwe/experimental)
 
-Experimental is an Split testing framework for Rails.  
+Experimental is a Split testing framework for Rails.  
 It was written with a few goals in mind:
-* Split the users in a non-predictable pattern (i.e. half of the users won't always
-be in all experiments)
+* Split the users in a non-predictable pattern, but programmatically.
+* Extremely performant and scalable.
+
+Further bullet points on this:
+* No reliance on a new technology beyond the database that powers your rails app.
+* No database lookups when determining which experiment bucket a user (or object) is in.
 * Keep experiments and their start and end dates in the database
 * Have a clear developer workflow, so that tests in the code are
   started in the database when the code goes out and tests that should
 be removed make the site explode
-* Allow admins to end experiments and set a winner
-* Cache the experiments
 
 ## Installation
 
@@ -70,8 +72,7 @@ user.experiment_bucket(:my_experiment)
 
 ### Ending an experiment
 
-You can end an experiment by setting the end_date.  In the admin
-interface, there is a dropdown to set the end date. When ending an
+You can end an experiment by setting the end_date. When ending an
 experiment *you must set a winning bucket*
 
 *Ending an experiment means that all users will be given the winning
@@ -165,11 +166,3 @@ after 'deploy:updated', 'experimental:sync' do
 end
 ```
 
-### Admin created experiments
-
-The purpose of Admin created experiments are for experiments
-that will flow through to another system, such as an email provider.
-They likely start with a known string and are dynamically sent in
-code.
-Otherwise, Admin created experiments will do nothing as there is no
-code attached to them. 
