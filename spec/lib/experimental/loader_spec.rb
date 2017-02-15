@@ -76,11 +76,11 @@ describe Experimental::Loader do
       experiment.start_date.should == Time.current
     end
 
-    it "creates an unstarted experiment if unstarted is set" do
+    it "does not reset the start time if unstarted is set" do
       Experimental.experiment_data['aa']['unstarted'] = true
       loader.sync
       experiment = Experimental::Experiment.all.first
-      experiment.should_not be_started
+      experiment.should be_started
     end
 
     it "logs it" do

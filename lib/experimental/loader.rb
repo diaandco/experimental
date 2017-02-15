@@ -33,6 +33,7 @@ module Experimental
         experiment = Experimental::Experiment.where(name: name).
           first_or_initialize
 
+        set_start_date(experiment, attributes)
         reset_attributes(experiment, attributes)
 
         logger.info "  * #{experiment.id ? 'updating' : 'creating'} #{name}"
@@ -42,7 +43,6 @@ module Experimental
     end
 
     def reset_attributes(experiment, attributes)
-      set_new_start_date(experiment, attributes)
       defaults = {'num_buckets' => nil, 'notes' => nil, 'population' => nil}
       experiment.assign_attributes(defaults.merge(attributes))
     end
@@ -55,12 +55,10 @@ module Experimental
       end
     end
 
-    def set_new_start_date(experiment, attributes)
-      if (unstarted = attributes.delete('unstarted'))
-        experiment.start_date = nil
-      else
-        experiment.start_date ||= Time.current
-      end
+    def set_start_date(experiment, attributes)
+      return if attributes.delete("unstarted")
+
+      experiment.start_date ||= Time.current
     end
   end
 end
