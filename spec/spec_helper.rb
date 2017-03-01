@@ -53,4 +53,8 @@ RSpec.configure do |config|
   # automatically. This will be the default behavior in future versions of
   # rspec-rails.
   config.infer_base_class_for_anonymous_controllers = false
+
+  # Config for shoulda-matchers
+  config.include(Shoulda::Matchers::ActiveModel, type: :model)
+  config.include(Shoulda::Matchers::ActiveRecord, type: :model)
 end
