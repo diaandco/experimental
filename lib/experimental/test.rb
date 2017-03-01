@@ -32,6 +32,11 @@ module Experimental
     #
     # If +bucket+ is nil, exclude the user from the experiment.
     def set_experimental_bucket(subject, experiment_name, bucket)
+      # Make sure the experiment is started
+      Experimental.source[experiment_name].try do |e|
+        e.update(start_date: Time.now) unless e.started?
+      end
+
       Experimental.overrides[subject, experiment_name] = bucket
     end
 
