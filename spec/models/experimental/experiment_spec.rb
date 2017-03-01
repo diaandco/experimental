@@ -54,13 +54,13 @@ shared_examples_for "third user" do
   end
 end
 
-describe Experimental::Experiment do
+describe Experimental::Experiment, type: :model do
   let(:user) { FactoryGirl.create(:user) }
   let(:experiment) { FactoryGirl.create(:experiment) }
 
-  def stub_sha1(result, name = "test", id = nil)
+  def stub_md5(result, name = "test", id = nil)
     id ||= result+1
-    Digest::SHA1.stub(:hexdigest).with("#{name}#{id}").and_return(result.to_s)
+    Digest::MD5.stub(:hexdigest).with("#{name}#{id}").and_return(result.to_s)
   end
 
   def set_winning_bucket_and_check_validity(bucket_val, valid)
@@ -207,9 +207,9 @@ describe Experimental::Experiment do
 
   describe "buckets" do
     before do
-      stub_sha1(0)
-      stub_sha1(1)
-      stub_sha1(2)
+      stub_md5(0)
+      stub_md5(1)
+      stub_md5(2)
     end
 
     context "when population is all" do
@@ -248,7 +248,7 @@ describe Experimental::Experiment do
 
       context "when user was in the experiment" do
         before do
-          stub_sha1(1, "default", 1)
+          stub_md5(1, "default", 1)
         end
 
         it_behaves_like "user should be in bucket 0(a)"
@@ -257,7 +257,7 @@ describe Experimental::Experiment do
 
       context "when user is NOT in the experiment" do
         before do
-          stub_sha1(0, "default")
+          stub_md5(0, "default")
         end
 
         it_behaves_like "user should be in bucket 0(a)"
@@ -270,7 +270,7 @@ describe Experimental::Experiment do
 
       describe "when user is in the experiment" do
         before do
-          stub_sha1(1, "default", 1)
+          stub_md5(1, "default", 1)
         end
 
         it_behaves_like "user should be in bucket 1(b)"
@@ -279,7 +279,7 @@ describe Experimental::Experiment do
 
       context "when user is NOT in the experiment" do
         before do
-          stub_sha1(0, "default")
+          stub_md5(0, "default")
         end
 
         it_behaves_like "user should be in bucket 1(b)"
@@ -593,9 +593,9 @@ describe Experimental::Experiment do
     end
 
     it "uses the experiment_seed_value for computation" do
-      experiment.bucket(user).should == 0
-      user.stub(:experiment_seed_value) { 89 }
       experiment.bucket(user).should == 1
+      user.stub(:experiment_seed_value) { 12 }
+      experiment.bucket(user).should == 0
     end
 
     it "returns nil if the experiment has not been started yet" do

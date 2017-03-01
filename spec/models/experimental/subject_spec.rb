@@ -6,6 +6,7 @@ describe Experimental::Subject do
   let(:user) { FactoryGirl.create(:user) }
   let(:experiment_name) { "exp" }
   let(:experiment) { FactoryGirl.create(:experiment, name: experiment_name) }
+  let(:unstarted_experiment) { FactoryGirl.create(:experiment, :unstarted) }
 
   describe "#in_experiment?" do
     context "in experiment" do
@@ -27,6 +28,12 @@ describe Experimental::Subject do
     context "given an invalid experiment name" do
       it "returns false" do
         user.in_experiment?(:doesnt_exist).should be_falsey
+      end
+    end
+
+    context "experiment is not started" do
+      it "returns false" do
+        user.in_experiment?(unstarted_experiment.name).should be false
       end
     end
   end
@@ -51,6 +58,12 @@ describe Experimental::Subject do
     context "given an invalid experiment name" do
       it "returns true" do
         user.not_in_experiment?(:doesnt_exist).should be_truthy
+      end
+    end
+
+    context "experiment is not started" do
+      it "returns true" do
+        user.not_in_experiment?(unstarted_experiment.name).should be true
       end
     end
   end
