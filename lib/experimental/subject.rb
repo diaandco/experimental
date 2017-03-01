@@ -1,7 +1,7 @@
 module Experimental
   module Subject
     def in_experiment?(name)
-      Experimental.source[name].try { |e| e.in?(self) }
+      Experimental.source[name].try { |e| e.started? && e.in?(self) }
     end
 
     def not_in_experiment?(name)
