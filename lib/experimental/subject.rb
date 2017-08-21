@@ -12,8 +12,8 @@ module Experimental
       Experimental.source[name].try { |e| e.in?(self) ? e.bucket(self) : nil }
     end
 
-    def in_bucket?(name, bucket)
-      in_experiment?(name) && experiment_bucket(name) == bucket
+    def in_bucket?(name, bucket, *args)
+      in_experiment?(name) && experiment_bucket(name).in?(args << bucket)
     end
 
     def experiment_seed_value

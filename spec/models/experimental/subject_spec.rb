@@ -118,6 +118,7 @@ describe Experimental::Subject do
         end
       end
     end
+
     context "user is not in experiment" do
       include_context "not in experiment"
       before do
@@ -132,6 +133,26 @@ describe Experimental::Subject do
       context "not given the user's experiment bucket" do
         it "returns false" do
           user.in_bucket?(experiment_name, 1).should be_falsey
+        end
+      end
+    end
+
+    context "user is in multiple buckets" do
+      let(:buckets) { [0, 1, 2] }
+
+      context "given the user's experiment bucket" do
+        include_context "in experiment bucket 0"
+
+        it "returns true" do
+          user.in_bucket?(experiment_name, *buckets).should be_truthy
+        end
+      end
+
+      context "given the user's experiment bucket" do
+        include_context "in experiment bucket 1"
+
+        it "returns true" do
+          user.in_bucket?(experiment_name, *buckets).should be_truthy
         end
       end
     end
